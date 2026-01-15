@@ -1,6 +1,9 @@
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { AuthProvider } from "@/context/AuthContext";
+import { LoadingProvider } from "@/context/LoadingContext";
+import LoadingBar from "@/components/ui/LoadingBar";
 
 export default function RootLayout({
   children,
@@ -10,13 +13,19 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-[#FFF7EF] text-gray-900">
-        <Navbar />
-        {children}
-        <Footer />
+        <AuthProvider>
+          <LoadingProvider>
+            <LoadingBar />
+            <Navbar />
+            {children}
+            <Footer />
+          </LoadingProvider>
+        </AuthProvider>
       </body>
     </html>
   );
 }
+
 
 
 // import type { Metadata } from "next";

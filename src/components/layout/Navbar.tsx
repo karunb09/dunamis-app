@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -23,6 +25,19 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  //user auth context
+  const { user, setUser, loading } = useAuth();
+  const router = useRouter();
+
+  async function logout() {
+    await fetch("/api/auth/logout", { method: "POST" });
+    setUser(null);
+    router.push("/");
+  }
+
+  if (loading) return null;
+  //end user auth context
+
   return (
     <header className="sticky top-0 z-50 bg-white border-b">
       <nav className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -33,13 +48,34 @@ export default function Navbar() {
 
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center gap-8 text-sm font-medium">
-          <Link href="/courses" className={isActive("/courses") ? "border px-1 py-1 rounded-full bg-color-orange-500 text-orange-500 font-medium" :"transition hover:-translate-y-[1px] hover:shadow-md active:scale-[0.98] hover:border px-1 py-1 rounded-full hover:text-orange-500"}>
+          <Link
+            href="/courses"
+            className={
+              isActive("/courses")
+                ? "border px-1 py-1 rounded-full bg-color-orange-500 text-orange-500 font-medium"
+                : "transition hover:-translate-y-[1px] hover:shadow-md active:scale-[0.98] hover:border px-1 py-1 rounded-full hover:text-orange-500"
+            }
+          >
             Courses
           </Link>
-          <Link href="/offline-centres" className={isActive("/offline-centres") ? "border px-1 py-1 rounded-full bg-color-orange-500 text-orange-500 font-medium" :"transition hover:-translate-y-[1px] hover:shadow-md active:scale-[0.98] hover:border px-1 py-1 rounded-full hover:text-orange-500"}>
+          <Link
+            href="/offline-centres"
+            className={
+              isActive("/offline-centres")
+                ? "border px-1 py-1 rounded-full bg-color-orange-500 text-orange-500 font-medium"
+                : "transition hover:-translate-y-[1px] hover:shadow-md active:scale-[0.98] hover:border px-1 py-1 rounded-full hover:text-orange-500"
+            }
+          >
             Offline Centres
           </Link>
-          <Link href="/store" className={isActive("/store") ? "border px-1 py-1 rounded-full bg-color-orange-500 text-orange-500 font-medium" :"transition hover:-translate-y-[1px] hover:shadow-md active:scale-[0.98] hover:border px-1 py-1 rounded-full hover:text-orange-500"}>
+          <Link
+            href="/store"
+            className={
+              isActive("/store")
+                ? "border px-1 py-1 rounded-full bg-color-orange-500 text-orange-500 font-medium"
+                : "transition hover:-translate-y-[1px] hover:shadow-md active:scale-[0.98] hover:border px-1 py-1 rounded-full hover:text-orange-500"
+            }
+          >
             Store
           </Link>
 
@@ -111,15 +147,28 @@ export default function Navbar() {
 
         {/* Right Actions */}
         <div className="hidden md:flex items-center gap-4">
-          <Link href="/login" className="transition hover:-translate-y-[1px] hover:shadow-md active:scale-[0.98] border px-4 py-2 rounded-full text-sm hover:text-orange-500">
-            Login
-          </Link>
-          <Link
-            href="/signup"
-            className="transition hover:-translate-y-[1px] hover:shadow-md active:scale-[0.98] bg-orange-500 text-white px-4 py-2 rounded-full text-sm hover:bg-orange-600 transition"
-          >
-            Sign Up
-          </Link>
+          {!user ? (
+            <div className="flex gap-4">
+              <Link
+                href="/auth/login"
+                className="transition hover:-translate-y-[1px] hover:shadow-md active:scale-[0.98] border px-4 py-2 rounded-full text-sm hover:text-orange-500"
+              >
+                Login
+              </Link>
+              <Link
+                href="/auth/signup"
+                className="transition hover:-translate-y-[1px] hover:shadow-md active:scale-[0.98] bg-orange-500 text-white px-4 py-2 rounded-full text-sm hover:bg-orange-600 transition"
+              >
+                Sign Up
+              </Link>
+            </div>
+          ) : (
+            <div className="flex gap-4 items-center">
+              <span>{user.name}</span>
+              <Link href="/dashboard" className="transition hover:-translate-y-[1px] hover:shadow-md active:scale-[0.98] border px-4 py-2 rounded-full text-sm hover:text-orange-500">Dashboard</Link>
+              <button onClick={logout} className="transition hover:-translate-y-[1px] hover:shadow-md hover:border px-1 py-1 rounded-full active:scale-[0.98] hover:text-orange-500">Logout</button>
+            </div>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -131,6 +180,7 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {open && (
         <div className="md:hidden bg-white border-t px-6 py-4 space-y-4">
+          <span>{user.name}</span>
           <Link href="/courses" className="block">
             Courses
           </Link>
@@ -146,15 +196,14 @@ export default function Navbar() {
           <Link href="/contact" className="block">
             Contact Us
           </Link>
-          <Link href="/login" className="block">
+          {!user ? (<><Link href="/auth/login" className="block">
             Login
-          </Link>
-          <Link
+          </Link><Link
             href="/signup"
             className="inline-block bg-orange-500 text-white px-4 py-2 rounded-full"
           >
-            Sign Up
-          </Link>
+              Sign Up
+            </Link></>) : (<><Link href="/dashboard" className="block">Dashboard</Link><button onClick={logout} className="block">Logout</button></>)}
         </div>
       )}
     </header>
