@@ -5,10 +5,6 @@ export async function POST(req: Request) {
 
   const user = await prisma.user.findUnique({ where: { email } });
 
-  if (!user || user.verificationCode !== code) {
-    return Response.json({ error: "Invalid verification code" }, { status: 400 });
-  }
-
   if (
     !user ||
     user.verificationCode !== code ||
@@ -26,6 +22,7 @@ export async function POST(req: Request) {
     data: {
       emailVerified: true,
       verificationCode: null,
+      verificationExpiresAt: null,
     },
   });
 

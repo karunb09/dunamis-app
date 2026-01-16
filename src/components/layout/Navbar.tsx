@@ -47,7 +47,17 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex items-center gap-8 text-sm font-medium">
+        <div className="hidden md:flex items-center gap-4 text-sm font-medium">
+          <Link
+            href="/"
+            className={
+              isActive("/")
+                ? "border px-1 py-1 rounded-full bg-color-orange-500 text-orange-500 font-medium"
+                : "transition hover:-translate-y-[1px] hover:shadow-md active:scale-[0.98] hover:border px-1 py-1 rounded-full hover:text-orange-500"
+            }
+          >
+            Home
+          </Link>
           <Link
             href="/courses"
             className={
@@ -156,7 +166,7 @@ export default function Navbar() {
                 Login
               </Link>
               <Link
-                href="/auth/signup"
+                href="/auth/signup/account"
                 className="transition hover:-translate-y-[1px] hover:shadow-md active:scale-[0.98] bg-orange-500 text-white px-4 py-2 rounded-full text-sm hover:bg-orange-600 transition"
               >
                 Sign Up
@@ -199,7 +209,7 @@ export default function Navbar() {
           {!user ? (<><Link href="/auth/login" className="block">
             Login
           </Link><Link
-            href="/signup"
+            href="/signup/account"
             className="inline-block bg-orange-500 text-white px-4 py-2 rounded-full"
           >
               Sign Up

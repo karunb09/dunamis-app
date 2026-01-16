@@ -24,12 +24,13 @@ export async function POST(req: Request) {
   return new Response(
     JSON.stringify({
       id: user.id,
-      name: user.name,
+      name: user.firstName,
+      lastname: user.lastName,
       role: user.role,
     }),
     {
       headers: {
-        "Set-Cookie": `token=${token}; HttpOnly; Path=/; Max-Age=604800`,
+        "Set-Cookie": `token=${token}; HttpOnly; Path=/; Max-Age=604800; SameSite=Lax`, //PRODUCTION TYPE SameSite=Strict; Secure
       },
     }
   );

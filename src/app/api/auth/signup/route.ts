@@ -3,30 +3,50 @@ import bcrypt from "bcryptjs";
 import { sendVerificationEmail } from "@/lib/mail";
 
 export async function POST(req: Request) {
-  const { name, email, password } = await req.json();
+  const { email, password } = await req.json();
 
-  if (!name || !email || !password) {
+  if (!email || !password) {
     return Response.json({ error: "Invalid input" }, { status: 400 });
   }
 
   const existing = await prisma.user.findUnique({ where: { email } });
-  if (existing) {
-    return Response.json({ error: "User already exists" }, { status: 400 });
+
+  if (existing && !existing.emailVerified) {
+    return Response.json({
+      status: "RESUME",
+      email: existing.email,
+    });
   }
 
+
+  if (existing && !existing.emailVerified) {
+    return Response.json({
+      status: "PENDING_VERIFICATION",
+      email: existing.email,
+    });
+  }
+
+  if (existing && existing.emailVerified) {
+    return Response.json(
+      { error: "Account already exists. Please login." },
+      { status: 400 }
+    );
+  }
+
+
   const passwordHash = await bcrypt.hash(password, 12);
-  const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+  const code = Math.floor(100000 + Math.random() * 900000).toString();
 
   await prisma.user.create({
     data: {
-      name,
       email,
       passwordHash,
-      verificationCode,
+      verificationCode: code,
+      verificationExpiresAt: new Date(Date.now() + 10 * 60 * 1000),
     },
   });
 
-  await sendVerificationEmail(email, verificationCode);
+  await sendVerificationEmail(email, code);
 
   return Response.json({ success: true });
 }

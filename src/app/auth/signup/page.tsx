@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 export default function SignupPage() {
   const router = useRouter();
   const [form, setForm] = useState({
-    name: "",
     email: "",
     password: "",
   });
@@ -36,11 +35,6 @@ export default function SignupPage() {
       <h1 className="text-2xl font-bold mb-6">Sign Up</h1>
 
       <form onSubmit={submit} className="space-y-4">
-        <input
-          placeholder="Name"
-          className="w-full border p-2"
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-        />
         <input
           placeholder="Email"
           className="w-full border p-2"
