@@ -63,15 +63,24 @@ export default function LoginPage() {
         <button className="transition hover:-translate-y-[1px] hover:shadow-md active:scale-[0.98] w-full bg-black text-white py-2">
           Login
         </button>
-
-        {/* 👇 Add this */}
-        <div className="text-right">
-          <Link
-            href="/auth/forgot-password"
-            className="text-sm text-blue-600 hover:underline"
-          >
-            Forgot password?
-          </Link>
+        
+        <div className="max-w-md flex justify-between">
+          <div className="text-left">
+            <Link
+              href="/auth/signup/account"
+              className="text-sm text-blue-600 hover:underline"
+            >
+              Not registered? Sign up
+            </Link>
+          </div>
+          <div className="text-right">
+            <Link
+              href="/auth/forgot-password"
+              className="text-sm text-blue-600 hover:underline"
+            >
+              Forgot password?
+            </Link>
+          </div>
         </div>
       </form>
     </div>

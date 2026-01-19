@@ -1,5 +1,6 @@
 "use client";
 
+import SignupLayout from "@/components/signup/SignupLayout";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
@@ -43,8 +44,9 @@ export default function SignupPersonalPage() {
   }
 
   return (
-    <form onSubmit={submit} className="max-w-md mx-auto mt-20 space-y-4">
-      <h1 className="text-2xl font-bold">Personal Information</h1>
+    <SignupLayout step={2} title="Personal Information" backTo="/auth/signup/account">
+    <form onSubmit={submit} className="max-w-md mx-auto mt-10 space-y-4">
+      {/* <h1 className="text-2xl font-bold">Personal Information</h1> */}
 
       <input
         placeholder="First name"
@@ -70,9 +72,10 @@ export default function SignupPersonalPage() {
         onChange={(e) => setForm({ ...form, mobile: e.target.value })}
       />
 
-      <button className="bg-orange-500 text-white px-6 py-2 rounded">
+      <button className="custom-transition bg-orange-500 text-white px-6 py-2 rounded">
         Continue
       </button>
     </form>
+    </SignupLayout>
   );
 }
